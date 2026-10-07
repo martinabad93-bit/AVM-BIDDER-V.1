@@ -28,7 +28,7 @@
     <div class="avm-unified-search">
       <label>
         <b>Buscar vehículo</b>
-        <span>Una sola búsqueda: escribe marca/modelo/año/serie, VIN o lote.</span>
+        <span>Una sola búsqueda: marca, modelo, año, serie, origen o tracción.</span>
         <input id="vehicleSearch" autocomplete="off"
           placeholder="Ej.: Toyota RAV4 XLE 2022 AWD · VIN · Lote Copart/IAAI">
       </label>
@@ -55,18 +55,18 @@
       <label>ZIP destino <input id="zipDest" value="33132" maxlength="5"></label>
       <label>Plataforma <select id="platform"><option>Copart</option><option>IAAI</option><option>Otra</option></select></label>
       <label>Lote <input id="lot" placeholder="Opcional"></label>
-      <label>Precio compra / puja <input id="market" type="number" placeholder="Se introduce en Costos"></label>
+      
     </div>
 
     <div id="matchbox" class="notice">
       Selecciona un único registro. No habrá un segundo buscador paralelo.
     </div>
 
-    <!-- Compatibility fields used by the existing calculation engine; kept hidden and synchronized. -->
+    <!-- Compatibility fields used by the calculation engine; kept hidden and synchronized. -->
     <div class="avm-compat" aria-hidden="true">
       <input id="brand"><input id="model"><input id="year"><input id="trim">
       <select id="traction"><option></option><option>AWD</option><option>FWD</option><option>4WD</option><option>4X4</option><option>RWD</option><option>4X2</option><option>2WD</option></select>
-      <input id="country"><input id="vin"><small id="vmsg"></small>
+      <input id="country"><input id="market"><input id="vin"><small id="vmsg"></small>
     </div>
 
     <footer>
