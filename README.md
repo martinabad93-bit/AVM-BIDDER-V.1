@@ -1,44 +1,57 @@
-# SALEM AUTO TRADER — V0.1
+# AVM-BIDDER PLUS — V1.0
 
 Fecha: 2026-10-06
 
 ## Estado
-Primer prototipo visual/funcional independiente de NEXT GB.
+Primera versión independiente del núcleo de análisis de puja.
 
-## Línea gráfica
-- Premium, minimalista y automotriz.
-- Light/Dark desde la primera versión.
-- Grafito/carbono en Dark; blanco cálido/grises en Light.
-- Rojo rubí como acento, sin copiar la identidad de NEXT GB ni IAAI.
-- Sidebar, hero automotriz, AI prompt, módulos y barra de capacidades.
+## Base de trabajo
+NEXT-AVPRO-BETA V2.5 se utilizó únicamente como fuente de reglas y datos validados. NEXT no se modifica y su interfaz no se copia.
 
-## Módulos definidos
-- AI EDOM PILOT: futura IA autónoma.
-- AVM-BIDDER PLUS: futura inteligencia de puja.
-- VEHICLE ANALYZER: futura inteligencia VIN/vehículo.
+## Incluye
+- Light / Dark.
+- Flujo Vehículo → Costos → Resultado.
+- Entrada manual, VIN y lote.
+- VIN mediante NHTSA vPIC cuando hay conexión.
+- Cruce inicial con Base de Datos Valores Vehiculos 2026–2027.
+- Matching marca + modelo + año; equivalencia inicial AWD=4WD=4X4.
+- Costos editables, FOB Miami, Despacho Sin Placa y Landed.
+- Puja ideal, máxima y límite de riesgo.
+- Margen y ROI.
+- Historial local y configuración.
+- ZIP destino predeterminado 33132.
 
-## Base técnica prevista
-Un solo motor de cálculo central compartido por AI EDOM PILOT y AVM-BIDDER PLUS. Se podrán reutilizar reglas y estructura de datos validadas de NEXT GB sin copiar su interfaz.
+## Reglas de cálculo tomadas de NEXT V2.5
+FOB Miami = subasta + fees + inland + documentación/logística origen + reparación Miami + broker.
 
-## V0.1 incluye
-- UI responsive.
-- Light/Dark persistente.
-- Pantalla inicial.
-- Navegación visual.
-- Entrada de lenguaje natural.
-- Detección demostrativa de compra y ZIP.
-- Modales de módulos.
+Despacho Sin Placa = FOB Miami + flete + paquete despacho + aduanas/DGA convertido a USD.
 
-## Próximos trabajos
-1. Arquitectura de datos.
-2. Motor central de costos.
-3. Integración de DB de vehículos.
-4. VIN Intelligence.
-5. AI EDOM PILOT real.
-6. AVM-BIDDER PLUS real.
-7. Mercado, margen, ROI y riesgo.
-8. ZIP/Inland inteligente.
-9. Operaciones e historial.
-10. Integraciones de subastas.
+Landed = Despacho Sin Placa + reparación RD convertida a USD en este núcleo inicial.
 
-NEXT GB V2.5 permanece intacto y separado.
+Valores base: Broker US$250, Documentación/logística US$675, Reparación Miami US$950, Flete US$910, Paquete despacho US$465, Honorarios US$0, ZIP destino 33132.
+
+## AVM-BIDDER V1.0
+Auction Fee e Inland son manuales hasta integrar fuentes autorizadas.
+
+costos_fijos = Auction Fee + Inland + Documentación + Reparación Miami + Broker + Honorarios + Flete + Despacho + Aduanas/USD + Reparación RD/USD
+
+puja_por_margen = mercado - costos_fijos - margen_mínimo
+
+puja_por_ROI = (mercado - costos_fijos) / (1 + ROI_objetivo/100)
+
+puja_máxima = mínimo(puja_por_margen, puja_por_ROI), limitada a cero.
+
+puja_ideal = puja_máxima × 0.93
+
+límite_riesgo = puja_máxima × 0.98
+
+## Pendiente
+- Matching avanzado de trim/serie y selector de coincidencias.
+- Auction Fees dinámicos Copart/IAAI mediante fuente autorizada.
+- Inland inteligente por ZIP.
+- AVM con comparables y escenarios.
+- Aduanas validada.
+- Emisión de placa.
+- Proforma/PDF.
+- Integraciones permitidas.
+- Pruebas de regresión con operaciones reales.
