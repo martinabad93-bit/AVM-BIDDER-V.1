@@ -1,15 +1,14 @@
-# AVM-BIDDER PLUS V1.4
+# AVM-BIDDER PLUS V1.5
 
-Corrección funcional autorizada.
+Corrección enfocada en la sincronización de DGA y placa dentro de la sección Costos.
 
-## Correcciones V1.4
-- Dark Mode robusto con persistencia local.
-- Al seleccionar un vehículo se calcula inmediatamente Aduanas + Emisión de Placa.
-- Motor de Aduanas alineado con la función `calc()` de NEXT GB: CIF = valor tabla + flete + seguro; arancel 10% por defecto sin tratado; ITBIS 18%; cargos fijos DGA 8,912.44 + 258.26 + 5,713.61 RD$; primera placa 17%; CO2 2% + RD$3,000.
-- Seguro DGA y gastos adicionales quedan en 0 por defecto, igual que NEXT.
-- `Valor` de la DB sigue siendo exclusivamente **Valor Tabla Aduanas**.
-- La puja/compra y el precio de venta siguen separados.
-- Se muestra un panel inmediato de Aduanas + Placa al seleccionar el vehículo.
-
-## Fuente validada
-La lógica de impuestos se tomó de la función `calc()` del proyecto NEXT GB de referencia. El resultado es estimado y no sustituye una liquidación oficial DGA.
+## Cambios
+- Al seleccionar un vehículo, el Valor Tabla Aduanas alimenta automáticamente el motor de impuestos.
+- DGA sin placa se calcula automáticamente.
+- Emisión de placa se calcula automáticamente.
+- Total DGA + placa se calcula automáticamente.
+- La sección Costos ahora muestra esos tres valores y no requiere introducirlos manualmente.
+- El Landed utiliza DGA sin placa + placa calculados por el motor.
+- El resumen de Costos muestra DGA + Placa en RD$.
+- El campo de DGA queda bloqueado para evitar que se sustituya accidentalmente el cálculo automático.
+- Se conserva el flujo: vehículo → puja → costo total → rentabilidad → max bid.

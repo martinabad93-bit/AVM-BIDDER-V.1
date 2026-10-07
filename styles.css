@@ -16,3 +16,5 @@ body.dark .dbitem{background:#15181d;border-color:#2a2e36}
 .tax-totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.tax-totals>div{background:#f7f8fa;border-radius:10px;padding:12px}.tax-totals small{display:block;color:#777}.tax-totals b{display:block;margin-top:3px;font-size:17px}.tax-note{font-size:10px;color:#747983;line-height:1.45;margin:12px 0 0}
 body.dark .avm-tax-card{background:#15181d;border-color:#2a2e36}.dark .tax-row{border-color:#2a2e36}.dark .tax-totals>div{background:#101216}.dark .tax-note{color:#9299a5}.dark .tax-totals small{color:#8d95a1}
 @media(max-width:700px){.tax-grid,.tax-totals{grid-template-columns:1fr}}
+.grid input[readonly]{background:#eef1f4;color:#111;font-weight:800;cursor:default}
+body.dark .grid input[readonly]{background:#0b0d10!important;color:#f1f2f4!important;border-color:#343943!important}
