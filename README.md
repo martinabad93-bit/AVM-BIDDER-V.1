@@ -1,57 +1,62 @@
-# AVM-BIDDER PLUS — V1.0
+# AVM-BIDDER PLUS V1.1
 
-Fecha: 2026-10-06
+## Objetivo
+V1.1 prioriza funcionalidad, velocidad y sincronización sobre estética. Mantiene el formato general de V1.0, pero incorpora un flujo rápido tipo Wizard y una capa centralizada para que la selección del vehículo cargue automáticamente sus parámetros.
 
-## Estado
-Primera versión independiente del núcleo de análisis de puja.
+## Flujo
+1. **Vehículo**: Marca → Modelo → Año → Serie/registro exacto, o búsqueda rápida.
+2. **Costos**: se precargan los costos fijos y solo se editan los variables.
+3. **Puja**: se introduce la puja y, opcionalmente, precio de venta y objetivos.
+4. **Decisión**: muestra Bid Ideal, Max Bid, Bid Riesgo y Landed.
 
-## Base de trabajo
-NEXT-AVPRO-BETA V2.5 se utilizó únicamente como fuente de reglas y datos validados. NEXT no se modifica y su interfaz no se copia.
+## Base de datos
+Se utiliza el CSV `Base de Datos Valores Vehiculos 2026 - 2027.csv` incluido en el proyecto.
+La aplicación carga todos los registros disponibles del CSV y normaliza:
+- Marca
+- Modelo
+- Año
+- País/Origen
+- Serie
+- Tipo de vehículo
+- Combustible
+- Cilindros
+- CC
+- Pasajeros
+- Puertas
+- Tracción
+- Cabinas
+- Peso de carga
+- Ejes
+- Valor AVM
 
-## Incluye
-- Light / Dark.
-- Flujo Vehículo → Costos → Resultado.
-- Entrada manual, VIN y lote.
-- VIN mediante NHTSA vPIC cuando hay conexión.
-- Cruce inicial con Base de Datos Valores Vehiculos 2026–2027.
-- Matching marca + modelo + año; equivalencia inicial AWD=4WD=4X4.
-- Costos editables, FOB Miami, Despacho Sin Placa y Landed.
-- Puja ideal, máxima y límite de riesgo.
-- Margen y ROI.
-- Historial local y configuración.
-- ZIP destino predeterminado 33132.
+La tracción se normaliza para búsqueda: AWD/4WD/4X4 se consideran familia AWD; FWD/4X2/2WD familia FWD; RWD se mantiene separado.
 
-## Reglas de cálculo tomadas de NEXT V2.5
-FOB Miami = subasta + fees + inland + documentación/logística origen + reparación Miami + broker.
+## Parámetros precargados
+- Broker: US$250 hasta US$15,000.
+- Documentación y logística origen: US$675.
+- Flete marítimo: US$910.
+- Despacho RD: US$465.
+- Reparación base: US$950, editable.
+- Honorarios: US$0 por defecto, editable.
+- Normativa 03-25: RD$0 por defecto, editable.
+- PP: RD$2,000.
+- Endoso/Gestión: RD$5,000.
 
-Despacho Sin Placa = FOB Miami + flete + paquete despacho + aduanas/DGA convertido a USD.
+Auction Fee e Inland son variables de la operación. Si se suministra un valor manual, debe respetarse.
 
-Landed = Despacho Sin Placa + reparación RD convertida a USD en este núcleo inicial.
+## Cálculos
+FOB Miami excluye flete marítimo y despacho RD.
+Landed incluye FOB + flete + aduanas/impuestos + despacho RD.
+La interfaz muestra margen y ROI cuando existe precio de venta.
 
-Valores base: Broker US$250, Documentación/logística US$675, Reparación Miami US$950, Flete US$910, Paquete despacho US$465, Honorarios US$0, ZIP destino 33132.
+## Importante sobre impuestos
+Esta versión deja Aduanas en US$0 hasta integrar en este proyecto la fórmula fiscal validada de NEXT. No se inventa una fórmula fiscal nueva.
 
-## AVM-BIDDER V1.0
-Auction Fee e Inland son manuales hasta integrar fuentes autorizadas.
+## Nueva consulta
+La acción Nueva consulta limpia la operación actual para evitar arrastrar precio de venta u otros datos de una consulta anterior.
 
-costos_fijos = Auction Fee + Inland + Documentación + Reparación Miami + Broker + Honorarios + Flete + Despacho + Aduanas/USD + Reparación RD/USD
+## Compatibilidad
+Proyecto independiente. No modifica NEXT GB V2.5 ni AVM-BIDDER PLUS V1.0.
 
-puja_por_margen = mercado - costos_fijos - margen_mínimo
-
-puja_por_ROI = (mercado - costos_fijos) / (1 + ROI_objetivo/100)
-
-puja_máxima = mínimo(puja_por_margen, puja_por_ROI), limitada a cero.
-
-puja_ideal = puja_máxima × 0.93
-
-límite_riesgo = puja_máxima × 0.98
-
-## Pendiente
-- Matching avanzado de trim/serie y selector de coincidencias.
-- Auction Fees dinámicos Copart/IAAI mediante fuente autorizada.
-- Inland inteligente por ZIP.
-- AVM con comparables y escenarios.
-- Aduanas validada.
-- Emisión de placa.
-- Proforma/PDF.
-- Integraciones permitidas.
-- Pruebas de regresión con operaciones reales.
+## Nota de arquitectura
+La capa `AVM_SYNC` centraliza la lectura y normalización de la base de datos. `AVM_DEFAULTS` centraliza parámetros fijos. El objetivo es que futuras funciones manuales, AI EDOM PILOT y el Bidder utilicen la misma fuente de verdad.

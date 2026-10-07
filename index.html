@@ -1,8 +1,302 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AVM-BIDDER PLUS V1.0</title><link rel="stylesheet" href="styles.css"></head><body><div class="app"><aside><div class="brand"><b>AVM</b><span>BIDDER PLUS</span></div><small>PUJA INTELIGENTE<br><b>MARGEN REAL</b></small><nav><button data-page="home" class="active">⌂ Inicio</button><button data-page="vehicle">▣ Vehículo</button><button data-page="costs">▤ Costos</button><button data-page="result">◈ Resultado</button><button data-page="history">◷ Historial</button><button data-page="database">▦ Base de datos</button><button data-page="settings">⚙ Configuración</button></nav><div class="source"><small>FUENTE</small><b>NEXT GB 2026–2027</b><span id="dbStatus">Cargando…</span></div><button id="theme">☼ Light / Dark</button></aside><main><header><div class="quick"><input id="quick" placeholder="Ej. RAV4 XLE 2022 AWD, compra 8500, ZIP 33166"><button id="analyze">Analizar →</button></div><button id="new">↻</button></header>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AVM-BIDDER PLUS V1.0</title><link rel="stylesheet" href="styles.css"><style>
+.avm-wizard{margin:24px auto;max-width:1180px;border:1px solid var(--border,#ddd);border-radius:18px;padding:20px;background:var(--card,#fff)}
+.avm-progress{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:12px;font-weight:700}
+.avm-progress span{opacity:.45}.avm-progress span.active{opacity:1}.avm-progress i{height:1px;flex:1;background:var(--border,#ddd)}
+.avm-step{display:none}.avm-step.active{display:block}.avm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.avm-grid label,.avm-search{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700}
+.avm-grid input,.avm-grid select,.avm-search input{padding:11px;border:1px solid var(--border,#ccc);border-radius:10px;background:inherit;color:inherit}
+.avm-search{margin:14px 0}.avm-matches{display:grid;gap:8px}.avm-match{padding:11px;border:1px solid var(--border,#ddd);border-radius:10px;cursor:pointer}.avm-match:hover{border-color:currentColor}
+.avm-card,.avm-summary,.avm-decision{margin:14px 0;padding:16px;border:1px solid var(--border,#ddd);border-radius:12px}.avm-card.muted{opacity:.65}
+.avm-actions{display:flex;justify-content:space-between;gap:10px;margin-top:16px}.avm-wizard button{padding:11px 16px;border:0;border-radius:10px;cursor:pointer;font-weight:700}
+.avm-wizard button:disabled{opacity:.45;cursor:not-allowed}.avm-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.avm-kpi{padding:14px;border:1px solid var(--border,#ddd);border-radius:10px}.avm-kpi strong{display:block;font-size:20px;margin-top:5px}
+@media(max-width:760px){.avm-grid,.avm-kpis{grid-template-columns:1fr 1fr}.avm-progress{font-size:10px}.avm-wizard{padding:14px}}
+</style></head><body><div class="app"><aside><div class="brand"><b>AVM</b><span>BIDDER PLUS</span></div><small>PUJA INTELIGENTE<br><b>MARGEN REAL</b></small><nav><button data-page="home" class="active">⌂ Inicio</button><button data-page="vehicle">▣ Vehículo</button><button data-page="costs">▤ Costos</button><button data-page="result">◈ Resultado</button><button data-page="history">◷ Historial</button><button data-page="database">▦ Base de datos</button><button data-page="settings">⚙ Configuración</button></nav><div class="source"><small>FUENTE</small><b>NEXT GB 2026–2027</b><span id="dbStatus">Cargando…</span></div><button id="theme">☼ Light / Dark</button></aside><main><header><div class="quick"><input id="quick" placeholder="Ej. RAV4 XLE 2022 AWD, compra 8500, ZIP 33166"><button id="analyze">Analizar →</button></div><button id="new">↻</button></header>
 <section id="home" class="page active"><div class="hero"><div><em>AVM-BIDDER PLUS · V1.0</em><h1>Calcula tu <strong>puja ideal</strong></h1><p>Analiza el costo real de importar un vehículo y establece una puja máxima con margen y ROI objetivo.</p><button class="primary" data-page="vehicle">Nueva operación +</button></div><div class="hero-art">AVM</div></div><div class="features"><div>◉<b>Cálculo central</b><span>Costos sincronizados</span></div><div>◇<b>Puja inteligente</b><span>Ideal, máxima y riesgo</span></div><div>⌁<b>Margen + ROI</b><span>Resultado en tiempo real</span></div><div>▦<b>Vehicle Intelligence</b><span>Base NEXT GB</span></div></div><div class="steps"><div><i>01</i><b>Vehículo</b><span>VIN, lote o manual</span></div><div><i>02</i><b>Costos</b><span>Compra y logística</span></div><div><i>03</i><b>Decisión</b><span>Puja y rentabilidad</span></div></div></section>
 <section id="vehicle" class="page"><div class="head"><div><em>PASO 01</em><h2>Información del vehículo</h2></div><span id="match">Manual</span></div><div class="card"><div class="tabs"><button class="active" data-mode="manual">Manual</button><button data-mode="vin">VIN</button><button data-mode="lot">Lote</button></div><div id="vinbox" class="hidden inline"><input id="vin" maxlength="17" placeholder="VIN de 17 caracteres"><button id="decode" class="secondary">Consultar VIN</button><small id="vmsg"></small></div><div class="grid"> <label>Marca<input id="brand"></label><label>Modelo<input id="model"></label><label>Año<input id="year" type="number"></label><label>Serie / Trim<input id="trim"></label><label>Tracción<select id="traction"><option></option><option>AWD</option><option>FWD</option><option>4WD</option><option>4X4</option><option>RWD</option><option>4X2</option><option>2WD</option></select></label><label>País<input id="country"></label><label>Millaje<input id="mileage" type="number"></label><label>ZIP origen<input id="zipOrigin" maxlength="5"></label><label>ZIP destino<input id="zipDest" value="33132" maxlength="5"></label><label>Plataforma<select id="platform"><option>Copart</option><option>IAAI</option><option>Otra</option></select></label><label>Lote<input id="lot"></label><label>Valor de mercado<input id="market" type="number"></label></div><div id="matchbox" class="notice">Busca el vehículo en la base para obtener el valor de referencia.</div><footer><button class="secondary" data-page="home">← Volver</button><button class="primary" id="nextCosts">Siguiente →</button></footer></div></section>
 <section id="costs" class="page"><div class="head"><div><em>PASO 02</em><h2>Costos de la operación</h2></div><button class="secondary" id="defaults">Restablecer</button></div><div class="card"><div class="grid"> <label>Precio compra / puja<input id="bid" type="number" value="0"></label><label>Auction Fee<input id="auctionFee" type="number" value="0"></label><label>Inland / grúa USA<input id="inland" type="number" value="0"></label><label>Documentación + logística<input id="docs" type="number" value="675"></label><label>Reparación Miami<input id="repairMiami" type="number" value="950"></label><label>Fee Broker<input id="broker" type="number" value="250"></label><label>Honorarios<input id="honorarios" type="number" value="0"></label><label>Flete marítimo<input id="freight" type="number" value="910"></label><label>Aduanas / DGA (RD$)<input id="customs" type="number" value="0"></label><label>Paquete despacho RD<input id="dispatch" type="number" value="465"></label><label>Tasa DOP/USD<input id="fx" type="number" value="60"></label><label>Reparación RD (RD$)<input id="repairRD" type="number" value="0"></label></div><div class="calc"><div><small>FOB Miami</small><b id="fob">$0.00</b></div><div><small>Despacho Sin Placa</small><b id="dispatchOut">$0.00</b></div><div><small>Landed</small><b id="landed">$0.00</b></div></div><footer><button class="secondary" data-page="vehicle">← Anterior</button><button class="primary" id="nextResult">Calcular →</button></footer></div></section>
 <section id="result" class="page"><div class="head"><div><em>PASO 03</em><h2>Decisión de puja</h2></div><span class="ok">CÁLCULO ACTIVO</span></div><div class="card"><div class="vehicle"><div class="logo">AVM</div><div><h3 id="title">Vehículo</h3><span id="meta">—</span></div></div><div class="bids"><div class="ideal"><small>PUJA IDEAL</small><b id="ideal">$0</b><span>Zona recomendada</span></div><div class="max"><small>PUJA MÁXIMA</small><b id="max">$0</b><span>Límite financiero</span></div><div class="risk"><small>LÍMITE DE RIESGO</small><b id="risk">$0</b><span>No superar</span></div></div><div class="cols"><div><h4>Resumen</h4><div id="rows"></div></div><div><h4>Rentabilidad</h4><label>Precio de venta / mercado<input id="sale" type="number"></label><div class="profit"><span>Margen</span><b id="margin">$0</b><span>ROI</span><b id="roi">0%</b></div></div></div><div class="notice"><b>Motor V1.0:</b> Auction Fee e Inland son manuales hasta integrar una fuente autorizada. No se inventan tarifas.</div><footer><button class="secondary" data-page="costs">← Ajustar costos</button><button class="primary" id="save">Guardar operación</button></footer></div></section>
 <section id="history" class="page"><div class="head"><div><em>REGISTRO</em><h2>Historial</h2></div></div><div class="card" id="historyList">Aún no hay operaciones.</div></section>
 <section id="database" class="page"><div class="head"><div><em>VEHICLE INTELLIGENCE</em><h2>Base de datos</h2></div></div><div class="card"><input id="dbSearch" placeholder="Buscar marca, modelo, año, serie o tracción"><div id="dbResults"></div></div></section>
-<section id="settings" class="page"><div class="head"><div><em>CONFIGURACIÓN</em><h2>Valores predeterminados</h2></div></div><div class="card"><div class="grid"><label>Broker<input id="setBroker" type="number" value="250"></label><label>Documentación<input id="setDocs" type="number" value="675"></label><label>Reparación Miami<input id="setRepair" type="number" value="950"></label><label>Flete<input id="setFreight" type="number" value="910"></label><label>Despacho RD<input id="setDispatch" type="number" value="465"></label><label>ZIP destino<input id="setZip" value="33132"></label><label>Tasa DOP/USD<input id="setFx" type="number" value="60"></label><label>Margen mínimo<input id="setMargin" type="number" value="0"></label><label>ROI objetivo %<input id="setROI" type="number" value="15"></label></div><footer><button class="primary" id="saveSettings">Guardar configuración</button></footer></div></section></main></div><script src="app.js"></script></body></html>
+<section id="settings" class="page"><div class="head"><div><em>CONFIGURACIÓN</em><h2>Valores predeterminados</h2></div></div><div class="card"><div class="grid"><label>Broker<input id="setBroker" type="number" value="250"></label><label>Documentación<input id="setDocs" type="number" value="675"></label><label>Reparación Miami<input id="setRepair" type="number" value="950"></label><label>Flete<input id="setFreight" type="number" value="910"></label><label>Despacho RD<input id="setDispatch" type="number" value="465"></label><label>ZIP destino<input id="setZip" value="33132"></label><label>Tasa DOP/USD<input id="setFx" type="number" value="60"></label><label>Margen mínimo<input id="setMargin" type="number" value="0"></label><label>ROI objetivo %<input id="setROI" type="number" value="15"></label></div><footer><button class="primary" id="saveSettings">Guardar configuración</button></footer></div></section></main></div><script src="app.js"></script>
+<section id="avmWizard" class="avm-wizard">
+  <div class="avm-progress"><span class="active">01 Vehículo</span><i></i><span>02 Costos</span><i></i><span>03 Puja</span><i></i><span>04 Decisión</span></div>
+  <div class="avm-step active" data-step="1">
+    <div class="avm-grid">
+      <label>Marca<select id="avmBrand"><option>Cargando…</option></select></label>
+      <label>Modelo<select id="avmModel" disabled><option>Selecciona marca</option></select></label>
+      <label>Año<select id="avmYear" disabled><option>Selecciona modelo</option></select></label>
+      <label>Serie / Registro<select id="avmSeries" disabled><option>Selecciona año</option></select></label>
+    </div>
+    <label class="avm-search">Búsqueda rápida<input id="avmSearch" placeholder="Ej.: Toyota RAV4 XLE 2022 AWD"></label>
+    <div id="avmMatches" class="avm-matches"></div>
+    <div id="avmVehicleCard" class="avm-card muted">Selecciona un vehículo para cargar automáticamente sus parámetros.</div>
+    <button id="avmNext1" disabled>Continuar → Costos</button>
+  </div>
+  <div class="avm-step" data-step="2">
+    <div id="avmFixedCosts" class="avm-card"></div>
+    <div class="avm-grid">
+      <label>Auction Fee <input id="avmAuctionFee" type="number" min="0" value="0"></label>
+      <label>Inland / Grúa <input id="avmInland" type="number" min="0" value="0"></label>
+      <label>Reparación <input id="avmRepair" type="number" min="0" value="950"></label>
+      <label>Honorarios <input id="avmHonor" type="number" min="0" value="0"></label>
+    </div>
+    <div id="avmCostSummary" class="avm-summary"></div>
+    <div class="avm-actions"><button data-back="1">← Vehículo</button><button id="avmNext2">Continuar → Puja</button></div>
+  </div>
+  <div class="avm-step" data-step="3">
+    <div class="avm-grid">
+      <label>Puja / Purchase Price <input id="avmBid" type="number" min="0" placeholder="0"></label>
+      <label>Precio de venta <input id="avmSale" type="number" min="0" placeholder="Opcional"></label>
+      <label>Margen objetivo % <input id="avmTargetMargin" type="number" min="0" value="15"></label>
+      <label>ROI objetivo % <input id="avmTargetROI" type="number" min="0" value="20"></label>
+    </div>
+    <div id="avmBidSummary" class="avm-summary"></div>
+    <div class="avm-actions"><button data-back="2">← Costos</button><button id="avmNext3">Ver decisión →</button></div>
+  </div>
+  <div class="avm-step" data-step="4">
+    <div id="avmDecision" class="avm-decision"></div>
+    <div class="avm-actions"><button data-back="3">← Ajustar</button><button id="avmNew">Nueva consulta</button></div>
+  </div>
+</section>
+<script>
+/* AVM-BIDDER PLUS V1.1 — synchronized vehicle database layer */
+(function(){
+  const DB_URL = encodeURI("Base de Datos Valores Vehiculos 2026 - 2027.csv");
+  const state = window.AVM_SYNC = window.AVM_SYNC || {
+    rows: [], index: {brand:new Map(), model:new Map(), series:new Map()},
+    selected: null, ready: false
+  };
+
+  const clean = v => String(v ?? "").trim();
+  const norm = v => clean(v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/\s+/g," ");
+  const key = v => norm(v);
+  const csvSplit = line => {
+    const a=[]; let cur="", q=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(c === '"'){ if(q && line[i+1] === '"'){cur+='"';i++;} else q=!q; }
+      else if(c === ',' && !q){a.push(cur);cur="";}
+      else cur+=c;
+    }
+    a.push(cur); return a;
+  };
+  function parseCSV(text){
+    const lines=text.replace(/^\uFEFF/,"").split(/\r?\n/).filter(Boolean);
+    if(!lines.length) return [];
+    const headers=csvSplit(lines[0]).map(clean);
+    return lines.slice(1).map(line=>{
+      const vals=csvSplit(line), o={};
+      headers.forEach((h,i)=>o[h]=clean(vals[i]));
+      return o;
+    }).filter(o=>o.Marca && o.Modelo);
+  }
+  function specs(raw){
+    const out={raw:clean(raw)};
+    const s=clean(raw).replace(/\|+/g,"|");
+    s.split("|").forEach(part=>{
+      const m=part.split(":");
+      if(m.length<2) return;
+      const label=norm(m.shift()).replace(/\s+/g," ");
+      const val=clean(m.join(":"));
+      if(!val) return;
+      const map={
+        "SERIE":"serie","SERIES":"serie",
+        "COMBUSTIBLE":"fuel","CILINDROS":"cylinders","CILINDRO":"cylinders",
+        "CC":"cc","PASAJEROS":"passengers","PUERTAS":"doors",
+        "TRACCION":"traction","TRACCIÓN":"traction",
+        "CABINAS":"cabins","CABINA":"cabins",
+        "PESO DE CARGA":"payload","PESO CARGA":"payload",
+        "EJES":"axles","TIPO VEHICULO":"vehicleType"
+      };
+      out[map[label] || label.toLowerCase().replace(/[^a-z0-9]+/g,"_")] = val;
+    });
+    return out;
+  }
+  function tractionFamily(v){
+    const t=norm(v).replace(/\s/g,"");
+    if(["AWD","4WD","4X4"].includes(t)) return "AWD";
+    if(["FWD","4X2","2WD"].includes(t)) return "FWD";
+    if(t==="RWD") return "RWD";
+    return t;
+  }
+  function enrich(row){
+    const sp=specs(row.Especificacion || row.Especificaciones || "");
+    return Object.assign({}, row, sp, {
+      year: clean(row.Año || row.ANIO || row.Year),
+      country: clean(row.Pais || row.País || row.Origen),
+      value: Number(String(row.Valor || "0").replace(/[^0-9.-]/g,"")) || 0,
+      tractionFamily: tractionFamily(sp.traction)
+    });
+  }
+  function rebuildIndex(){
+    state.index={brand:new Map(),model:new Map(),series:new Map()};
+    state.rows.forEach((r,i)=>{
+      const b=key(r.Marca), m=key(r.Modelo), y=key(r.year);
+      if(!state.index.brand.has(b)) state.index.brand.set(b,r.Marca);
+      const mk=b+"|"+m;
+      if(!state.index.model.has(mk)) state.index.model.set(mk,[]);
+      state.index.model.get(mk).push(i);
+      const sk=mk+"|"+y;
+      if(!state.index.series.has(sk)) state.index.series.set(sk,[]);
+      state.index.series.get(sk).push(i);
+    });
+  }
+  function uniqueSorted(a){return [...new Set(a.filter(Boolean))].sort((x,y)=>String(x).localeCompare(String(y),undefined,{numeric:true,sensitivity:"base"}));}
+  function brands(){return uniqueSorted(state.rows.map(r=>r.Marca));}
+  function models(brand){return uniqueSorted(state.rows.filter(r=>key(r.Marca)===key(brand)).map(r=>r.Modelo));}
+  function years(brand,model){return uniqueSorted(state.rows.filter(r=>key(r.Marca)===key(brand)&&key(r.Modelo)===key(model)).map(r=>r.year));}
+  function records(brand,model,year){
+    return state.rows.filter(r=>key(r.Marca)===key(brand)&&key(r.Modelo)===key(model)&&key(r.year)===key(year));
+  }
+  function findExact(q){
+    q=q||{};
+    let c=state.rows.filter(r=>!q.brand || key(r.Marca)===key(q.brand));
+    c=c.filter(r=>!q.model || key(r.Modelo)===key(q.model));
+    c=c.filter(r=>!q.year || String(r.year)===String(q.year));
+    const wantT=tractionFamily(q.traction);
+    if(wantT) c=c.filter(r=>!r.traction || r.tractionFamily===wantT);
+    if(q.series){
+      const s=norm(q.series);
+      const exact=c.filter(r=>norm(r.serie||"")===s);
+      if(exact.length) c=exact;
+    }
+    return c;
+  }
+  function search(text){
+    const q=norm(text);
+    if(!q) return state.rows.slice(0,20);
+    return state.rows.map((r,i)=>{
+      const hay=norm([r.Marca,r.Modelo,r.serie,r.year,r.country,r.traction,r.vehicleType,r.fuel].join(" "));
+      let score=0;
+      q.split(" ").filter(x=>x.length>1).forEach(t=>{if(hay.includes(t)) score += 1;});
+      if(norm(r.Marca) && q.includes(norm(r.Marca))) score+=4;
+      if(norm(r.Modelo) && q.includes(norm(r.Modelo))) score+=4;
+      if(r.year && q.includes(String(r.year))) score+=3;
+      if(r.traction && q.includes(norm(r.traction))) score+=3;
+      return {r,i,score};
+    }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,30).map(x=>x.r);
+  }
+
+  state.api={brands,models,years,records,findExact,search,tractionFamily,uniqueSorted};
+  window.AVM_VEHICLE_DB = state.api;
+
+  window.addEventListener("avm:selectVehicle", e=>{
+    const r=e.detail; if(!r) return;
+    state.selected=r;
+    // Centralized fixed parameters. Operation-specific overrides remain editable.
+    window.AVM_DEFAULTS = Object.assign({
+      broker:250, documentation:675, freight:910, dispatch:465,
+      workshop:950, honorarios:0, normativa:0, pp:2000, endoso:5000
+    }, window.AVM_DEFAULTS||{});
+    window.AVM_SELECTED_VEHICLE = r;
+    window.dispatchEvent(new CustomEvent("avm:vehicleReady",{detail:{vehicle:r,defaults:window.AVM_DEFAULTS}}));
+  });
+
+  fetch(DB_URL,{cache:"no-store"}).then(r=>{
+    if(!r.ok) throw new Error("No se pudo cargar la base de datos");
+    return r.text();
+  }).then(text=>{
+    state.rows=parseCSV(text).map(enrich);
+    rebuildIndex(); state.ready=true;
+    window.dispatchEvent(new CustomEvent("avm:dbReady",{detail:{count:state.rows.length,brands:brands()}}));
+  }).catch(err=>{
+    console.warn("AVM DB:",err);
+    window.dispatchEvent(new CustomEvent("avm:dbError",{detail:err}));
+  });
+})();
+</script><script>
+(function(){
+  const $=id=>document.getElementById(id);
+  let selected=null, step=1;
+  const money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(Number(n)||0);
+  const fixed={broker:250,documentation:675,freight:910,dispatch:465};
+  const val=id=>Number($(id)?.value)||0;
+  function setStep(n){
+    step=n; document.querySelectorAll(".avm-step").forEach(x=>x.classList.toggle("active",Number(x.dataset.step)===n));
+    document.querySelectorAll(".avm-progress span").forEach((x,i)=>x.classList.toggle("active",i<n));
+  }
+  function fill(select,items,placeholder){
+    select.innerHTML=`<option value="">${placeholder}</option>`+items.map(x=>`<option>${String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;")}</option>`).join("");
+    select.disabled=!items.length;
+  }
+  function renderVehicle(r){
+    selected=r;
+    const fields=[
+      ["Tipo",r.vehicleType||r["Tipo Vehiculo"]||"—"],["Marca",r.Marca],["Modelo",r.Modelo],
+      ["Serie",r.serie||"—"],["Año",r.year],["Origen",r.country||"—"],["Combustible",r.fuel||"—"],
+      ["Cilindros",r.cylinders||"—"],["CC",r.cc||"—"],["Pasajeros",r.passengers||"—"],
+      ["Puertas",r.doors||"—"],["Tracción",r.traction||"—"],["Cabinas",r.cabins||"—"],
+      ["Carga",r.payload||"—"],["Ejes",r.axles||"—"],["Valor AVM",money(r.value)]
+    ];
+    $("avmVehicleCard").innerHTML="<strong>"+r.Marca+" "+r.Modelo+"</strong><div class='avm-kpis'>"+
+      fields.map(f=>`<div class="avm-kpi"><small>${f[0]}</small><strong>${f[1]}</strong></div>`).join("")+"</div>";
+    $("avmNext1").disabled=false;
+    $("avmFixedCosts").innerHTML=`<strong>Parámetros precargados</strong><div class="avm-kpis">
+      <div class="avm-kpi">Broker<strong>${money(fixed.broker)}</strong></div>
+      <div class="avm-kpi">Documentación<strong>${money(fixed.documentation)}</strong></div>
+      <div class="avm-kpi">Flete<strong>${money(fixed.freight)}</strong></div>
+      <div class="avm-kpi">Despacho RD<strong>${money(fixed.dispatch)}</strong></div></div>`;
+  }
+  function updateModels(){
+    fill($("avmModel"),AVM_VEHICLE_DB.models($("avmBrand").value),"Selecciona modelo");
+    fill($("avmYear"),[],"Selecciona modelo"); fill($("avmSeries"),[],"Selecciona año");
+  }
+  function updateYears(){
+    fill($("avmYear"),AVM_VEHICLE_DB.years($("avmBrand").value,$("avmModel").value),"Selecciona año");
+    fill($("avmSeries"),[],"Selecciona año");
+  }
+  function updateSeries(){
+    const rows=AVM_VEHICLE_DB.records($("avmBrand").value,$("avmModel").value,$("avmYear").value);
+    const labels=rows.map(r=>`${r.serie||"Sin serie"} | ${r.country||"—"} | ${r.traction||"—"} | ${r.cylinders||"—"} cyl`);
+    $("avmSeries").innerHTML=`<option value="">Selecciona registro exacto</option>`+rows.map((r,i)=>`<option value="${i}">${labels[i]}</option>`).join("");
+    $("avmSeries").disabled=!rows.length;
+  }
+  function selectSeries(){
+    const rows=AVM_VEHICLE_DB.records($("avmBrand").value,$("avmModel").value,$("avmYear").value);
+    const r=rows[Number($("avmSeries").value)];
+    if(r){renderVehicle(r);window.dispatchEvent(new CustomEvent("avm:selectVehicle",{detail:r}));}
+  }
+  function renderSearch(){
+    const rows=AVM_VEHICLE_DB.search($("avmSearch").value);
+    $("avmMatches").innerHTML=rows.slice(0,12).map((r,i)=>`<div class="avm-match" data-i="${i}"><strong>${r.Marca} ${r.Modelo} ${r.serie||""}</strong> · ${r.year} · ${r.country||"—"} · ${r.traction||"—"} · ${r.cylinders||"—"} cyl · ${money(r.value)}</div>`).join("");
+    $("avmMatches").querySelectorAll(".avm-match").forEach((el,i)=>el.onclick=()=>{
+      const r=rows[i]; $("avmBrand").value=r.Marca; updateModels(); $("avmModel").value=r.Modelo; updateYears(); $("avmYear").value=r.year; updateSeries();
+      const rs=AVM_VEHICLE_DB.records(r.Marca,r.Modelo,r.year); const idx=rs.indexOf(r); $("avmSeries").value=String(idx); selectSeries();
+    });
+  }
+  function calc(){
+    const bid=val("avmBid"), fee=val("avmAuctionFee"), inland=val("avmInland"), repair=val("avmRepair"), honor=val("avmHonor");
+    const origin=bid+fee+inland+repair+fixed.documentation+fixed.broker+honor;
+    const fob=origin, customs=0, landed=fob+fixed.freight+customs+fixed.dispatch;
+    const sale=val("avmSale"), gain=sale? sale-landed:null, roi=(gain!==null&&landed)?gain/landed*100:null;
+    const targetM=val("avmTargetMargin"), targetR=val("avmTargetROI"), market=selected?.value||0;
+    const fixedBid=fee+inland+repair+fixed.documentation+fixed.broker+honor+fixed.freight+customs+fixed.dispatch;
+    const maxMargin=Math.max(0,market-targetM-fixedBid);
+    const maxROI=Math.max(0,(market-fixedBid)/(1+targetR/100));
+    const max=Math.min(maxMargin,maxROI), ideal=max*.93,risk=max*.98;
+    return {bid,origin,fob,landed,sale,gain,roi,max,ideal,risk,market,fixedBid};
+  }
+  function refreshCost(){
+    const c=calc(); $("avmCostSummary").innerHTML=`FOB Miami <strong>${money(c.fob)}</strong> · Flete <strong>${money(fixed.freight)}</strong> · Despacho RD <strong>${money(fixed.dispatch)}</strong> · Landed <strong>${money(c.landed)}</strong>`;
+  }
+  function refreshBid(){
+    const c=calc(); $("avmBidSummary").innerHTML=`<div class="avm-kpis"><div class="avm-kpi">FOB Miami<strong>${money(c.fob)}</strong></div><div class="avm-kpi">Landed<strong>${money(c.landed)}</strong></div><div class="avm-kpi">AVM<strong>${money(c.market)}</strong></div><div class="avm-kpi">Margen/ROI<strong>${c.gain===null?"—":money(c.gain)+" / "+c.roi.toFixed(1)+"%"}</strong></div></div>`;
+  }
+  function decision(){
+    const c=calc(); $("avmDecision").innerHTML=`<h2>Decisión de Puja</h2><div class="avm-kpis">
+      <div class="avm-kpi">Bid Ideal<strong>${money(c.ideal)}</strong></div>
+      <div class="avm-kpi">Max Bid<strong>${money(c.max)}</strong></div>
+      <div class="avm-kpi">Bid Riesgo<strong>${money(c.risk)}</strong></div>
+      <div class="avm-kpi">Landed al bid actual<strong>${money(c.landed)}</strong></div></div>
+      <p>El Max Bid utiliza el valor AVM seleccionado y los parámetros precargados. Aduanas permanece como estimación 0 hasta integrar la fórmula fiscal validada de NEXT.</p>`;
+  }
+  function newQuery(){ selected=null; document.querySelectorAll("#avmWizard input").forEach(i=>{if(i.type!=="button")i.value=i.id==="avmRepair"?"950":i.id==="avmTargetMargin"?"15":i.id==="avmTargetROI"?"20":""}); $("avmVehicleCard").textContent="Selecciona un vehículo para cargar automáticamente sus parámetros."; $("avmNext1").disabled=true; setStep(1); }
+  window.addEventListener("avm:dbReady",()=>{fill($("avmBrand"),AVM_VEHICLE_DB.brands(),"Selecciona marca");});
+  $("avmBrand").onchange=updateModels; $("avmModel").onchange=updateYears; $("avmYear").onchange=updateSeries; $("avmSeries").onchange=selectSeries;
+  $("avmSearch").oninput=()=>{clearTimeout(window._avmT);window._avmT=setTimeout(renderSearch,120)};
+  $("avmNext1").onclick=()=>setStep(2); $("avmNext2").onclick=()=>{refreshBid();setStep(3)}; $("avmNext3").onclick=()=>{decision();setStep(4)}; $("avmNew").onclick=newQuery;
+  ["avmAuctionFee","avmInland","avmRepair","avmHonor"].forEach(id=>$(id).oninput=refreshCost);
+  ["avmBid","avmSale","avmTargetMargin","avmTargetROI"].forEach(id=>$(id).oninput=refreshBid);
+  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>setStep(Number(b.dataset.back)));
+})();
+</script></body></html>
